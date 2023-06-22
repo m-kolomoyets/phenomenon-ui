@@ -1,0 +1,57 @@
+@import url("./reset.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --focus-color: #2793ff;
+  --scroll-thumb-color: #777575;
+}
+
+@layer components {
+  body .visually-hidden {
+      @apply absolute h-[1px] w-[1px] m-[-1px] p-0 border-0 overflow-hidden;
+
+      clip: rect(0 0 0 0);
+  }
+
+  body .focus-primary:focus-visible {
+      @apply outline-none ring-2 ring-[var(--focus-color)];
+  }
+
+  body .focus-primary:focus {
+      @apply outline-none ring-2 ring-[var(--focus-color)];
+  }
+
+  body .focus-within-primary:focus-within {
+      @apply outline-none ring-2 ring-[var(--focus-color)];
+  }
+
+  body .focus-primary:focus:not(body .focus-primary:focus-visible) {
+      @apply ring-0;
+  }
+
+  body .focus-primary-child {
+      @apply ring-2 ring-[var(--focus-color)];
+  }
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+    *::-webkit-scrollbar {
+        @apply lg:w-3 lg:h-3;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        @apply lg:bg-opacity-100;
+    }
+
+    *::-webkit-scrollbar-track {
+        @apply lg:bg-slate-100;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        @apply lg:bg-[var(--scroll-thumb-color)] lg:bg-opacity-50 lg:rounded-sm lg:border-4 lg:border-slate-100;
+    }
+}

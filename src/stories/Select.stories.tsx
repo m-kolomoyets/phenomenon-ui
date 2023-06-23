@@ -17,3 +17,10 @@ export const Base: Story = {
         options: createSelectOptionsWithDefaultType(20),
     } as SelectProps<DefaultSelectOptionType>,
 };
+
+export const WithLabel: Story = {
+    args: {
+        label: 'Select',
+        options: createSelectOptionsWithDefaultType(20),
+    } as SelectProps<DefaultSelectOptionType>,
+};

@@ -2,14 +2,14 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
-import tsConfigPaths from "vite-tsconfig-paths";
+import tsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
     plugins: [
         react(),
         tsConfigPaths(),
         dts({
-            include: ["src"],
+            include: ['src'],
             insertTypesEntry: true,
         }),
     ],
@@ -19,7 +19,7 @@ export default defineConfig({
             name: 'phenomenon-ui',
             formats: ['es', 'umd', 'cjs'],
             fileName: (format) => {
-              return `phenomenon-ui.${format === "cjs" ? "cjs" : "es.js"}`;
+                return `phenomenon-ui.${format === 'cjs' ? 'cjs' : 'es.js'}`;
             },
         },
         rollupOptions: {

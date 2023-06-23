@@ -1,7 +1,7 @@
 {
     "name": "phenomenon-ui",
     "private": false,
-    "version": "0.0.1",
+    "version": "0.0.2",
     "type": "module",
     "types": "dist/index.d.ts",
     "exports": {
@@ -19,11 +19,11 @@
     ],
     "scripts": {
         "build": "vite build && npm run build:css",
-        "build:css": "tailwindcss -m -i ./src/styles/index.css -o ./dist/styles.css",
+        "build:css": "tailwindcss -m -i ./src/tailwind-entry.css -o ./dist/styles.css",
         "storybook": "concurrently \"npm run storybook:css\" \"storybook dev -p 6006\"",
-        "storybook:css": "tailwindcss -w -i ./src/styles/index.css -o ./src/index.css",
+        "storybook:css": "tailwindcss -w -i ./src/tailwind-entry.css -o ./src/index.css",
         "build-storybook": "concurrently \"npm run build-storybook:css\" \"storybook build\"",
-        "build-storybook:css": "tailwindcss -m -i ./src/styles/index.css -o ./src/index.css",
+        "build-storybook:css": "tailwindcss -m -i ./src/tailwind-entry.css -o ./src/index.css",
         "prepublishOnly": "npm run build"
     },
     "dependencies": {

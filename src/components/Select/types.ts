@@ -46,6 +46,10 @@ export type SelectComponentsClassNamesType = {
         Class name for menu wrapper
     */
     menuClassName?: string;
+    /**
+        Class name for menu items
+    */
+    listItemClassName?: string;
 };
 
 export type SelectProps<TOption extends DefaultSelectOptionType> = WithClassName<{

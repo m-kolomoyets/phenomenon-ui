@@ -1,0 +1,47 @@
+@layer components {
+    body .visually-hidden {
+        @apply absolute h-[1px] w-[1px] m-[-1px] p-0 border-0 overflow-hidden;
+
+        clip: rect(0 0 0 0);
+    }
+
+    body .focus-primary:focus-visible {
+        @apply outline-none ring-2 ring-[var(--focus-color)];
+    }
+
+    body .focus-primary:focus {
+        @apply outline-none ring-2 ring-[var(--focus-color)];
+    }
+
+    body .focus-within-primary:focus-within {
+        @apply outline-none ring-2 ring-[var(--focus-color)];
+    }
+
+    body .focus-primary:focus:not(body .focus-primary:focus-visible) {
+        @apply ring-0;
+    }
+
+    body .focus-primary-child {
+        @apply ring-2 ring-[var(--focus-color)];
+    }
+
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+    *::-webkit-scrollbar {
+        @apply w-1 h-1;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        @apply bg-opacity-100;
+    }
+
+    *::-webkit-scrollbar-track {
+        @apply bg-slate-100;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        @apply bg-[var(--scroll-thumb-color)] bg-opacity-40 rounded-sm border-4 border-slate-100;
+    }
+}

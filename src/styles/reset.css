@@ -38,6 +38,7 @@ body [type="submit"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {

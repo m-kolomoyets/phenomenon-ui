@@ -1,10 +1,10 @@
-import { forwardRef, memo, useCallback, useMemo, useRef, useState } from 'react';
+import { forwardRef, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useVirtual } from 'react-virtual';
 import { useCombobox } from 'downshift';
 import clsx from 'clsx';
 import type { DefaultSelectOptionType, SelectProps } from './types';
 import { itemToString as defaultItemToString } from './utils/itemToString';
-import s from './Select.module.css';
+import './../../index.css';
 
 const Select = forwardRef(
     <TOption extends DefaultSelectOptionType>(props: SelectProps<TOption>, ref?: React.Ref<HTMLDivElement>) => {
@@ -17,7 +17,7 @@ const Select = forwardRef(
             componentsClassNames,
             itemToString = defaultItemToString,
             onChange,
-            // onInputValueChange,
+            onInputValueChange,
         } = props;
 
         const [searchValue, setSearchValue] = useState('');
@@ -43,50 +43,51 @@ const Select = forwardRef(
             getToggleButtonProps,
             getMenuProps,
             getItemProps,
+            openMenu,
         } = useCombobox({
             items: filteredOptions,
-            isOpen: true,
             itemToString,
-            onSelectedItemChange: ({ selectedItem }) => {
+            onSelectedItemChange({ selectedItem }) {
                 onChange?.(selectedItem);
             },
-            onInputValueChange: ({ inputValue }) => {
-                setSearchValue(inputValue ?? '');
-            },
-            onHighlightedIndexChange: ({ highlightedIndex: currentHighlightedIndex, type }) => {
-                if (type !== useCombobox.stateChangeTypes.MenuMouseLeave) {
-                    rowVirtualizer.scrollToIndex(currentHighlightedIndex ?? highlightedIndex);
+            onHighlightedIndexChange({ highlightedIndex: currentHighlightedIndex, type }) {
+                if (
+                    type !== useCombobox.stateChangeTypes.MenuMouseLeave &&
+                    currentHighlightedIndex !== undefined &&
+                    currentHighlightedIndex >= 0
+                ) {
+                    rowVirtualizer.scrollToIndex(currentHighlightedIndex);
                 }
-            },
-            scrollIntoView: () => {
-                return;
             },
         });
 
         const wrapClasses = useMemo(() => {
-            return clsx(s.wrap, className, componentsClassNames?.wrapClassName);
+            return clsx('select-wrap', className, componentsClassNames?.wrapClassName);
         }, [className, componentsClassNames?.wrapClassName]);
         const innerClasses = useMemo(() => {
-            return clsx(s.inner, componentsClassNames?.innerClassName);
+            return clsx('select-inner', componentsClassNames?.innerClassName);
         }, [componentsClassNames?.innerClassName]);
         const inputWrapperClasses = useMemo(() => {
-            return clsx(s.inputWrapper, componentsClassNames?.inputWrapClassName);
+            return clsx('select-input__wrapper', componentsClassNames?.inputWrapClassName);
         }, [componentsClassNames?.inputWrapClassName]);
         const inputClasses = useMemo(() => {
-            return clsx(s.input, componentsClassNames?.inputClassName);
+            return clsx('select-input', componentsClassNames?.inputClassName);
         }, [componentsClassNames?.inputClassName]);
         const toggleButtonClasses = useMemo(() => {
-            return clsx(s.toggleButton, componentsClassNames?.toggleButtonClassName, {
-                [s.opened]: isOpen,
+            return clsx('select-toggle__button', componentsClassNames?.toggleButtonClassName, {
+                'select-toggle__button--opened': isOpen,
             });
         }, [componentsClassNames?.toggleButtonClassName, isOpen]);
         const menuClasses = useMemo(() => {
-            return clsx(s.menu, componentsClassNames?.menuClassName);
+            return clsx('select-menu', componentsClassNames?.menuClassName);
         }, [componentsClassNames?.menuClassName]);
+        const listItemClasses = useMemo(() => {
+            return clsx('select-list__item', componentsClassNames?.listItemClassName);
+        }, [componentsClassNames?.listItemClassName]);
 
         const labelJSX = useMemo(() => {
             const labelProps = getLabelProps({
-                className: clsx(s.label, componentsClassNames?.labelClassName),
+                className: clsx('select-label', componentsClassNames?.labelClassName),
             });
 
             switch (true) {
@@ -104,30 +105,57 @@ const Select = forwardRef(
 
         const renderItemJSX = useCallback(
             (item: TOption) => {
-                switch (true) {
-                    case !!components && !!components.renderItem: {
-                        return components?.renderItem?.(item);
-                    }
-                    default: {
-                        return <span>{item.label}</span>;
-                    }
-                }
+                return (
+                    <span className="select-list__item--inner">
+                        {!!components && !!components.renderItem ? (
+                            components?.renderItem?.(item)
+                        ) : (
+                            <span>{item.label}</span>
+                        )}
+                    </span>
+                );
             },
             [components]
         );
+
+        useEffect(() => {
+            if (!isOpen) {
+                setSearchValue('');
+            }
+        }, [isOpen]);
 
         return (
             <div ref={ref} className={wrapClasses}>
                 <div className={innerClasses}>
                     {labelJSX}
                     <div className={inputWrapperClasses}>
-                        <input
-                            {...getInputProps({
-                                type: 'search',
-                                className: inputClasses,
-                                placeholder: inputPlaceholder,
-                            })}
-                        />
+                        {isOpen ? (
+                            <input
+                                {...getInputProps({
+                                    type: 'search',
+                                    className: inputClasses,
+                                    placeholder: inputPlaceholder,
+                                })}
+                                value={searchValue}
+                                onChange={(event) => {
+                                    const { value } = event.target;
+
+                                    setSearchValue(value);
+                                    onInputValueChange?.(value);
+                                }}
+                            />
+                        ) : (
+                            <button
+                                className={clsx('select-value__container', inputClasses, {
+                                    'no-value': !selectedItem,
+                                })}
+                                type="button"
+                                onClick={openMenu}
+                            >
+                                <span>{selectedItem?.label ?? inputPlaceholder}</span>
+                            </button>
+                        )}
+
                         <button
                             {...getToggleButtonProps({
                                 className: toggleButtonClasses,
@@ -135,20 +163,15 @@ const Select = forwardRef(
                                 'aria-label': 'toggle menu',
                             })}
                         >
-                            <span className={s.indicator} />
+                            <span className="select-indicator" />
                         </button>
                     </div>
                     {isOpen ? (
-                        <div
-                            style={{
-                                maxHeight: '200px',
-                            }}
-                        >
+                        <div className="select-menu__wrapper">
                             <ul
                                 {...getMenuProps({
                                     className: menuClasses,
                                     style: {
-                                        maxHeight: '200px',
                                         overflowY: 'auto',
                                         height: rowVirtualizer.totalSize,
                                     },
@@ -157,13 +180,14 @@ const Select = forwardRef(
                                 {rowVirtualizer.virtualItems.map((virtualRow) => {
                                     return (
                                         <li
+                                            ref={virtualRow.measureRef}
                                             {...getItemProps({
-                                                ref: virtualRow.measureRef,
+                                                className: clsx(listItemClasses, {
+                                                    'select-list__item--highlighted':
+                                                        highlightedIndex === virtualRow.index,
+                                                }),
                                                 index: virtualRow.index,
                                                 key: virtualRow.index,
-                                                style: {
-                                                    height: virtualRow.size,
-                                                },
                                                 item: filteredOptions[virtualRow.index],
                                             })}
                                         >

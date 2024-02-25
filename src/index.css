@@ -2,46 +2,60 @@
 @import url("./styles/reset.css");
 
 /* !!! NOTE !!! */
+
 /* --ring-color can vary by the project */
+
 /* So you are free to change it to suitable for your project */
 
 :root {
-  --ring-width: 2px;
-  --ring-color: rgb(0, 126, 244);
-  --ring-offset-shadow: 0 0 0 0 #ffffff;
-  --ring-shadow: 0 0 0 var(--ring-width) var(--ring-color);
+    --ring-width: 2px;
+    --ring-color: rgb(0, 126, 244);
+    --ring-offset-shadow: 0 0 0 0 #ffffff;
+    --ring-shadow: 0 0 0 var(--ring-width) var(--ring-color);
 }
 
 body .focus-primary:focus-visible {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow: var(--ring-offset-shadow), var(--ring-shadow), 0 0 #0000;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow:
+        var(--ring-offset-shadow),
+        var(--ring-shadow),
+        0 0 #000000;
 }
 
 body .focus-primary:focus {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow: var(--ring-offset-shadow), var(--ring-shadow), 0 0 #0000;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow:
+        var(--ring-offset-shadow),
+        var(--ring-shadow),
+        0 0 #000000;
 }
 
 body .focus-within-primary:focus-within {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow: var(--ring-offset-shadow), var(--ring-shadow), 0 0 #0000;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow:
+        var(--ring-offset-shadow),
+        var(--ring-shadow),
+        0 0 #000000;
 }
 
 body .focus-primary:focus:not(body .focus-primary:focus-visible) {
-  --ring-width: 0;
+    --ring-width: 0;
 }
 
 body .focus-primary-child {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow: var(--ring-offset-shadow), var(--ring-shadow), 0 0 #0000;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow:
+        var(--ring-offset-shadow),
+        var(--ring-shadow),
+        0 0 #000000;
 }
 
 .truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

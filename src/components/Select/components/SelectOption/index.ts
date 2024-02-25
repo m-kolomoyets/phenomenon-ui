@@ -1,2 +1,2 @@
-export * from "./SelectOption";
-export { default } from "./SelectOption";
+export * from './SelectOption';
+export { default } from './SelectOption';

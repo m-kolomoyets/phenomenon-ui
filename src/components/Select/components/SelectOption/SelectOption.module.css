@@ -1,0 +1,17 @@
+.wrap {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem;
+}
+
+.wrap[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.indicator {
+  margin-left: 0.5rem;
+}

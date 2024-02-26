@@ -1,44 +1,32 @@
-import { useState } from 'react';
 import type { SelectOption, SelectProps } from '../../src/components/Select/types';
+import { useSelectState } from '../../src/components/Select/hooks/useSelectState';
 import Select from '../../src/components/Select';
 
-const generateOptions = (count: number, disabledOptionsNumbers?: number[]): Record<string, SelectOption> => {
+const generateOptions = (count: number, disabledOptionsNumbers?: number[]): SelectOption[] => {
     return Array.from({ length: count }, (_, i) => {
-        return `${i + 1}`;
-    }).reduce(
-        (acc, id) => {
-            acc[id] = {
-                label: `Option ${id}`,
-                value: id,
-                disabled: disabledOptionsNumbers?.includes(+id),
-            };
-            return acc;
-        },
-        {} as Record<string, SelectOption>
-    );
+        return {
+            label: `Option ${i + 1}`,
+            value: `${i + 1}`,
+            disabled: disabledOptionsNumbers?.includes(i + 1),
+        };
+    });
 };
 
 const MOCK_SELECT_OPTIONS = generateOptions(2);
 
-const SelectWithState: React.FC<Partial<SelectProps>> = (props) => {
-    const [value, setValue] = useState<SelectOption | undefined>(() => {
-        return props?.value;
-    });
+type SelectWithStateProps = Partial<Omit<SelectProps, 'options'>> & {
+    options?: SelectOption[];
+};
 
-    return (
-        <Select
-            options={MOCK_SELECT_OPTIONS}
-            {...props}
-            placeholder="Select option"
-            value={value}
-            onChange={setValue}
-        />
-    );
+const SelectWithState: React.FC<SelectWithStateProps> = (props) => {
+    const { value, optionsObject, setValue } = useSelectState(props?.options ?? MOCK_SELECT_OPTIONS, props?.value);
+
+    return <Select {...props} options={optionsObject} placeholder="Select option" value={value} onChange={setValue} />;
 };
 
 describe('Select:', () => {
     it('should render empty component without errors', () => {
-        cy.mount(<SelectWithState options={{}} />);
+        cy.mount(<SelectWithState options={[]} />);
     });
 
     it('Should render without value with options on trigger click', () => {
@@ -52,7 +40,7 @@ describe('Select:', () => {
     });
 
     it('Should render with initial value and it should be checked in options list', () => {
-        cy.mount(<SelectWithState value={MOCK_SELECT_OPTIONS[1]} />);
+        cy.mount(<SelectWithState value={MOCK_SELECT_OPTIONS[0]} />);
 
         cy.get('[data-testid=select-trigger]').contains('Option 1');
 
@@ -89,7 +77,7 @@ describe('Select:', () => {
 
     describe('Empty message:', () => {
         it('should render default empty message when no options passed and noOptionsMessage prop is not passed', () => {
-            cy.mount(<SelectWithState options={{}} />);
+            cy.mount(<SelectWithState options={[]} />);
 
             cy.get('[data-testid=select-trigger]').click();
 
@@ -101,7 +89,7 @@ describe('Select:', () => {
         });
 
         it('should render custom "No options" message when no options passed and noOptionsMessage prop is passed', () => {
-            cy.mount(<SelectWithState options={{}} noOptionsMessage="No options available" />);
+            cy.mount(<SelectWithState options={[]} noOptionsMessage="No options available" />);
 
             cy.get('[data-testid=select-trigger]').click();
 
@@ -119,7 +107,7 @@ describe('Select:', () => {
 
             cy.get('[data-testid="select-clear"]').should('not.exist');
 
-            cy.mount(<SelectWithState value={MOCK_SELECT_OPTIONS[1]} isCleanable />);
+            cy.mount(<SelectWithState value={MOCK_SELECT_OPTIONS[0]} isCleanable />);
 
             cy.get('[data-testid=select-trigger]').contains('Option 1');
 
@@ -127,7 +115,7 @@ describe('Select:', () => {
         });
 
         it('should clear value on clear button click', () => {
-            cy.mount(<SelectWithState value={MOCK_SELECT_OPTIONS[1]} isCleanable />);
+            cy.mount(<SelectWithState value={MOCK_SELECT_OPTIONS[0]} isCleanable />);
 
             cy.get('[data-testid=select-trigger]').contains('Option 1');
 
@@ -148,7 +136,7 @@ describe('Select:', () => {
 
         describe('When isClearable prop is passed:', () => {
             it('should be non interactive when disabled prop is passed and clearable', () => {
-                cy.mount(<SelectWithState disabled value={MOCK_SELECT_OPTIONS[1]} isCleanable />);
+                cy.mount(<SelectWithState disabled value={MOCK_SELECT_OPTIONS[0]} isCleanable />);
 
                 cy.get('[data-testid=select-trigger]').should('be.disabled');
 
@@ -159,7 +147,7 @@ describe('Select:', () => {
 
     describe('Option is disabled', () => {
         it('should display disabled option with "disabled" attribute', () => {
-            cy.mount(<SelectWithState options={generateOptions(2, [1])} value={MOCK_SELECT_OPTIONS[1]} />);
+            cy.mount(<SelectWithState options={generateOptions(2, [1])} value={MOCK_SELECT_OPTIONS[0]} />);
 
             cy.get('[data-testid=select-trigger]').contains('Option 1');
 
@@ -169,7 +157,7 @@ describe('Select:', () => {
         });
 
         it('should not change value on disabled option click', () => {
-            cy.mount(<SelectWithState options={generateOptions(4, [2])} value={MOCK_SELECT_OPTIONS[1]} />);
+            cy.mount(<SelectWithState options={generateOptions(4, [2])} value={MOCK_SELECT_OPTIONS[0]} />);
 
             cy.get('[data-testid=select-trigger]').contains('Option 1');
 

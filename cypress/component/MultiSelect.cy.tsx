@@ -1,49 +1,27 @@
-import { useCallback, useState } from 'react';
-import { produce } from 'immer';
 import type { MultiSelectOption, MultiSelectProps } from '../../src/components/MultiSelect/types';
+import { useMultiSelectState } from '../../src/components/MultiSelect/hooks/useMultiSelectState';
 import MultiSelect from '../../src/components/MultiSelect';
 
-const generateOptions = (
-    count: number,
-    config?: { disabled?: number[]; checked?: number[] }
-): Record<string, MultiSelectOption> => {
+const generateOptions = (count: number, config?: { disabled?: number[]; checked?: number[] }): MultiSelectOption[] => {
     return Array.from({ length: count }, (_, i) => {
-        return `${i + 1}`;
-    }).reduce(
-        (acc, id) => {
-            acc[id] = {
-                label: `Option ${id}`,
-                value: id,
-                disabled: config?.disabled?.includes(+id),
-                checked: config?.checked?.includes(+id),
-            };
-            return acc;
-        },
-        {} as Record<string, MultiSelectOption>
-    );
+        const id = i + 1;
+        return {
+            label: `Option ${id}`,
+            value: `${id}`,
+            disabled: config?.disabled?.includes(id),
+            checked: config?.checked?.includes(id),
+        };
+    });
 };
 
 const MOCK_SELECT_OPTIONS = generateOptions(2);
 
-const MultiSelectWithState: React.FC<Partial<MultiSelectProps>> = (props) => {
-    const [options, setOptions] = useState<MultiSelectProps['options']>(() => {
-        return props?.options || MOCK_SELECT_OPTIONS;
-    });
+type MultiSelectWithStateProps = Partial<Omit<MultiSelectProps, 'options'>> & {
+    options?: MultiSelectOption[];
+};
 
-    const valueChangeHandler = useCallback(
-        (value: MultiSelectOption) => {
-            const isOptionChecked = value?.checked;
-            setOptions((prev) => {
-                return produce(prev, (draft) => {
-                    draft[value.value] = {
-                        ...draft[value.value],
-                        checked: !isOptionChecked,
-                    };
-                });
-            });
-        },
-        [setOptions]
-    );
+const MultiSelectWithState: React.FC<MultiSelectWithStateProps> = (props) => {
+    const { options, onValueChange } = useMultiSelectState(props?.options ?? MOCK_SELECT_OPTIONS);
 
     return (
         <MultiSelect
@@ -51,14 +29,14 @@ const MultiSelectWithState: React.FC<Partial<MultiSelectProps>> = (props) => {
             options={options}
             captionSingular={props?.captionSingular ?? 'item'}
             captionPlural={props?.captionPlural ?? 'items'}
-            onValueChange={valueChangeHandler}
+            onValueChange={onValueChange}
         />
     );
 };
 
 describe('MultiSelect:', () => {
     it('should render empty component without errors', () => {
-        cy.mount(<MultiSelectWithState options={{}} />);
+        cy.mount(<MultiSelectWithState options={[]} />);
     });
 
     it('should render without value with options on options trigger click', () => {

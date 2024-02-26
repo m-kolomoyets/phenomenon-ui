@@ -54,8 +54,20 @@ body .focus-primary-child {
         0 0 #000000;
 }
 
-.truncate {
+body .truncate {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+body .sr-only {
+    display: inline-block;
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border-width: 0;
 }

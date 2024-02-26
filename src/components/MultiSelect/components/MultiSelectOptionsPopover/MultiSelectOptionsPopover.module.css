@@ -1,0 +1,54 @@
+.trigger {
+    width: 3.125rem;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem;
+    padding-right: 0.5rem;
+    border: 1px solid #555555;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.option:hover {
+    background-color: #f0f0f0;
+}
+
+.option-cta {
+    opacity: 0;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+.option-cta.checked,
+.option:focus-within .option-cta {
+    opacity: 1;
+}
+
+.content {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.25rem;
+    border: 1px solid #555555;
+}
+
+.list {
+    position: relative;
+    width: 300px;
+}
+
+.option-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+}
+
+.empty-wrap {
+    padding: 0.5rem;
+    text-align: center;
+}

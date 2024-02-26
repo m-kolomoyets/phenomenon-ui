@@ -104,7 +104,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
                                         const option = Object.values(options)[item.index];
 
                                         return (
-                                            <div
+                                            <li
                                                 key={option.value}
                                                 ref={item.measureRef}
                                                 className={s['item-wrap']}
@@ -121,7 +121,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
                                                 >
                                                     <span className={clsx(s.text, 'truncate')}>{option.label}</span>
                                                 </SelectOption>
-                                            </div>
+                                            </li>
                                         );
                                     })}
                                 </ul>

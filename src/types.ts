@@ -13,3 +13,5 @@ export type WithChildren<T> = T & {
 };
 
 export type FCProps<T> = WithClassName<WithChildren<T>>;
+
+export type SetStateValue<T> = React.Dispatch<React.SetStateAction<T>>;

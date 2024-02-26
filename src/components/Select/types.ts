@@ -1,8 +1,17 @@
 import type { SelectProps as SelectRootProps } from '@radix-ui/react-select';
 
 export type SelectOption = {
+    /**
+        Label of the option.
+    */
     label: string;
+    /**
+        Identifier of the option.
+    */
     value: string;
+    /**
+        If true, the option is disabled.
+    */
     disabled?: boolean;
 };
 

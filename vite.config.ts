@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import istanbul from 'vite-plugin-istanbul';
@@ -11,9 +13,10 @@ export default defineConfig({
             requireEnv: false,
         }),
     ],
+    test: {
+        environment: 'jsdom',
+    },
     resolve: {
-        alias: {
-            '@/*': 'src/*',
-        },
+        alias: [{ find: '@', replacement: '/src' }],
     },
 });
